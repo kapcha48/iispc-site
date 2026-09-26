@@ -1,4 +1,5 @@
 import type { ChatGPTUser } from "../chatgpt-auth";
+import { getGitContent, listGitContent } from "./git-content";
 import { getPayloadContent, listPayloadContent } from "./payload-content";
 
 export type ContentType = "news" | "publication" | "event" | "gallery";
@@ -115,6 +116,8 @@ export async function isAdminUser(user: ChatGPTUser | null) {
 }
 
 export async function listPublishedContent(type?: ContentType, limit = 24): Promise<ContentItem[]> {
+  const gitItems = listGitContent(type, limit);
+  if (gitItems.length) return gitItems;
   if (type) {
     const payloadItems = await listPayloadContent(type, limit);
     if (payloadItems) return payloadItems;
@@ -134,6 +137,8 @@ export async function listPublishedContent(type?: ContentType, limit = 24): Prom
 }
 
 export async function getPublishedContent(type: ContentType, slug: string): Promise<ContentItem | null> {
+  const gitItem = getGitContent(type, slug);
+  if (gitItem) return gitItem;
   const payloadItem = await getPayloadContent(type, slug);
   if (payloadItem !== undefined) return payloadItem;
   const bindings = await getBindings();

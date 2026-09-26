@@ -655,6 +655,7 @@ html.menu-is-open { overflow: hidden; }
 .admin-gate h1 { font-size: clamp(44px, 6vw, 74px); }
 .admin-gate p:not(.eyebrow) { color: var(--muted); font-size: 18px; }
 .admin-gate .button { margin-top: 18px; }
+.admin-gate-note { margin-top: 22px; font-size: 14px !important; }
 .admin-page { padding: 64px 0 110px; background: var(--soft); }
 .admin-heading { margin-bottom: 48px; display: flex; justify-content: space-between; gap: 40px; align-items: end; }
 .admin-heading h1 { margin-bottom: 12px; font-size: clamp(48px, 6vw, 76px); }
