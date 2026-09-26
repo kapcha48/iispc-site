@@ -42,7 +42,7 @@ content:
       - { name: cover, label: Главное изображение, type: image, description: "Выберите фотографию, которая будет показана в карточке новости." }
       - { name: coverAlt, label: Что изображено на фотографии, type: string, description: "Кратко опишите фото для людей, использующих экранное чтение." }
       - { name: body, label: Полный текст новости, type: rich-text, required: true }
-      - { name: publishedAt, label: Дата публикации, type: date, options: { time: true }, description: "Можно оставить текущую дату или указать дату события." }
+      - { name: publishedAt, label: Дата публикации, type: date, default: "", options: { time: true, format: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx" }, description: "Укажите дату, когда материал должен отображаться как опубликованный." }
       - { name: sourceUrl, label: Ссылка на старый сайт, type: string, hidden: true }
 
   - name: events
@@ -60,8 +60,8 @@ content:
       - { name: excerpt, label: Краткое описание, type: text, required: true, description: "Что это за мероприятие и для кого оно предназначено." }
       - { name: cover, label: Главное изображение, type: image }
       - { name: coverAlt, label: Что изображено на фотографии, type: string }
-      - { name: eventDate, label: Дата и время начала, type: date, required: true, options: { time: true } }
-      - { name: endDate, label: Дата и время окончания, type: date, options: { time: true } }
+      - { name: eventDate, label: Дата и время начала, type: date, required: true, default: "", options: { time: true, format: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx" } }
+      - { name: endDate, label: Дата и время окончания, type: date, default: "", options: { time: true, format: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx" } }
       - name: format
         label: Формат
         type: select
@@ -125,7 +125,7 @@ content:
       - { name: slug, label: Технический адрес, type: string, hidden: true }
       - *status_field
       - { name: excerpt, label: Краткое описание, type: text, required: true }
-      - { name: eventDate, label: Дата события, type: date, options: { time: false } }
+      - { name: eventDate, label: Дата события, type: date, default: "", options: { time: false, format: "yyyy-MM-dd" } }
       - { name: images, label: Фотографии, type: image, list: true, description: "Добавьте фотографии в желаемом порядке показа." }
       - { name: body, label: Дополнительный текст, type: rich-text }
 
