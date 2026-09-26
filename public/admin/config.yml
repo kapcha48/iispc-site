@@ -1,0 +1,149 @@
+locale: ru
+local_backend: true
+
+# Адрес OAuth-входа будет заполнен после создания бесплатного обработчика авторизации.
+backend:
+  name: github
+  repo: kapcha48/iispc-site
+  branch: main
+  base_url: REPLACE_WITH_FREE_OAUTH_WORKER_URL
+  auth_endpoint: auth
+
+publish_mode: editorial_workflow
+media_folder: public/archive/uploads
+public_folder: /archive/uploads
+site_url: https://iispc.org
+display_url: https://iispc.org
+logo_url: /iispc-logo-approved.png
+
+collections:
+  - name: news
+    label: Новости
+    label_singular: Новость
+    folder: content/news
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{publishedAt}}"
+    sortable_fields: [publishedAt, title]
+    fields:
+      - { label: Заголовок, name: title, widget: string }
+      - { label: Адрес страницы, name: slug, widget: string, hint: "Латинские буквы, цифры и дефисы" }
+      - { label: Статус, name: status, widget: select, options: [published, draft], default: draft }
+      - { label: Краткое описание, name: excerpt, widget: text }
+      - { label: Дата публикации, name: publishedAt, widget: datetime, date_format: DD.MM.YYYY, time_format: false }
+      - { label: Обложка, name: cover, widget: image, required: false }
+      - { label: Описание изображения, name: coverAlt, widget: string, required: false }
+      - { label: Источник, name: sourceUrl, widget: string, required: false }
+      - { label: Текст новости, name: body, widget: markdown }
+
+  - name: events
+    label: Мероприятия
+    label_singular: Мероприятие
+    folder: content/events
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{eventDate}}"
+    sortable_fields: [eventDate, title]
+    fields:
+      - { label: Название, name: title, widget: string }
+      - { label: Адрес страницы, name: slug, widget: string }
+      - { label: Статус, name: status, widget: select, options: [published, draft], default: draft }
+      - { label: Краткое описание, name: excerpt, widget: text }
+      - { label: Начало, name: eventDate, widget: datetime }
+      - { label: Окончание, name: endDate, widget: datetime, required: false }
+      - { label: Формат, name: format, widget: select, options: [{ label: Очно, value: offline }, { label: Онлайн, value: online }, { label: Смешанный, value: hybrid }] }
+      - { label: Место или ссылка, name: location, widget: string, required: false }
+      - { label: Ссылка для регистрации, name: registrationUrl, widget: string, required: false }
+      - { label: Обложка, name: cover, widget: image, required: false }
+      - { label: Описание изображения, name: coverAlt, widget: string, required: false }
+      - { label: Полное описание, name: body, widget: markdown }
+
+  - name: programs
+    label: Обучение
+    label_singular: Программа
+    folder: content/programs
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}}"
+    fields:
+      - { label: Название программы, name: title, widget: string }
+      - { label: Адрес страницы, name: slug, widget: string }
+      - { label: Статус, name: status, widget: select, options: [published, draft], default: draft }
+      - { label: Тип программы, name: programType, widget: select, options: [{ label: Профессиональная переподготовка, value: retraining }, { label: Повышение квалификации, value: qualification }, { label: Семинар или курс, value: course }, { label: Другой формат, value: other }] }
+      - { label: Краткое описание, name: excerpt, widget: text }
+      - { label: Продолжительность, name: duration, widget: string, required: false }
+      - { label: Выдаваемый документ, name: document, widget: string, required: false }
+      - { label: Условия поступления, name: admission, widget: markdown, required: false }
+      - { label: Обложка, name: cover, widget: image, required: false }
+      - { label: Описание программы, name: body, widget: markdown }
+
+  - name: publications
+    label: Научные публикации
+    label_singular: Публикация
+    folder: content/publications
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{authors}}"
+    fields:
+      - { label: Название, name: title, widget: string }
+      - { label: Адрес страницы, name: slug, widget: string }
+      - { label: Статус, name: status, widget: select, options: [published, draft], default: draft }
+      - { label: Авторы, name: authors, widget: string }
+      - { label: Год, name: year, widget: number, value_type: int, required: false }
+      - { label: Аннотация, name: excerpt, widget: text }
+      - { label: Обложка, name: cover, widget: image, required: false }
+      - { label: Файл публикации, name: file, widget: file, required: false }
+      - { label: Внешняя ссылка, name: externalUrl, widget: string, required: false }
+      - { label: Описание, name: body, widget: markdown, required: false }
+
+  - name: galleries
+    label: Фотогалереи
+    label_singular: Фотоальбом
+    folder: content/galleries
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{eventDate}}"
+    fields:
+      - { label: Название, name: title, widget: string }
+      - { label: Адрес страницы, name: slug, widget: string }
+      - { label: Статус, name: status, widget: select, options: [published, draft], default: draft }
+      - { label: Описание, name: excerpt, widget: text, required: false }
+      - { label: Дата события, name: eventDate, widget: datetime, required: false }
+      - label: Фотографии
+        name: images
+        widget: list
+        field: { label: Фотография, name: image, widget: image }
+
+  - name: people
+    label: О нас
+    label_singular: Человек
+    folder: content/people
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{role}}"
+    fields:
+      - { label: Имя, name: title, widget: string }
+      - { label: Адрес записи, name: slug, widget: string }
+      - { label: Должность, name: role, widget: string }
+      - { label: Степень или квалификация, name: degree, widget: string, required: false }
+      - { label: Группа, name: group, widget: select, options: [{ label: Руководство, value: leadership }, { label: Преподаватели, value: faculty }, { label: Представители, value: representatives }, { label: Команда, value: team }] }
+      - { label: Порядок, name: order, widget: number, value_type: int, default: 0 }
+      - { label: Фотография, name: cover, widget: image, required: false }
+      - { label: Биография, name: body, widget: markdown, required: false }
+
+  - name: pages
+    label: Страницы сайта
+    label_singular: Страница
+    folder: content/pages
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{section}}"
+    fields:
+      - { label: Название, name: title, widget: string }
+      - { label: Адрес страницы, name: slug, widget: string }
+      - { label: Статус, name: status, widget: select, options: [published, draft], default: draft }
+      - { label: Раздел, name: section, widget: select, options: [{ label: О нас, value: about }, { label: Обучение, value: education }, { label: Наука, value: science }, { label: Международная деятельность, value: international }, { label: Контакты, value: contacts }, { label: Архив, value: archive }, { label: Другое, value: other }] }
+      - { label: Краткое описание, name: excerpt, widget: text, required: false }
+      - { label: Обложка, name: cover, widget: image, required: false }
+      - { label: Адрес на старом сайте, name: sourceUrl, widget: string, required: false }
+      - { label: Содержание страницы, name: body, widget: markdown }

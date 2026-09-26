@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" role="img" aria-labelledby="title desc">
+  <title id="title">IISPC</title>
+  <desc id="desc">Международный институт социальной психотерапии и консультирования</desc>
+  <defs>
+    <linearGradient id="graphiteGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#292a2e" stop-opacity=".92"/>
+      <stop offset=".28" stop-color="#777b82" stop-opacity=".64"/>
+      <stop offset=".52" stop-color="#34363b" stop-opacity=".86"/>
+      <stop offset=".73" stop-color="#9da2aa" stop-opacity=".48"/>
+      <stop offset="1" stop-color="#25262a" stop-opacity=".88"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".68"/>
+      <stop offset=".42" stop-color="#aeb2ba" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#18191c" stop-opacity=".42"/>
+    </linearGradient>
+    <filter id="glassShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#111218" flood-opacity=".16"/>
+    </filter>
+    <filter id="symbolGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#9f2382" flood-opacity=".16"/>
+    </filter>
+    <clipPath id="symbolCrop"><rect x="755" y="22" width="220" height="292"/></clipPath>
+    <style>
+      .letter{opacity:0;transform:translateY(14px);transform-box:fill-box;transform-origin:center;animation:letterIn .72s cubic-bezier(.2,.75,.2,1) forwards;filter:url(#glassShadow)}
+      .l1{animation-delay:.05s}.l2{animation-delay:.18s}.l3{animation-delay:.31s}.l4{animation-delay:.44s}.l5{animation-delay:.57s}
+      .symbol{opacity:0;transform:translateX(10px);transform-box:fill-box;transform-origin:center;animation:symbolIn 1.25s .88s cubic-bezier(.2,.75,.2,1) forwards;filter:url(#symbolGlow)}
+      .subtitle{opacity:0;animation:subtitleIn .8s 1.72s ease-out forwards}
+      @keyframes letterIn{to{opacity:1;transform:translateY(0)}}
+      @keyframes symbolIn{0%{opacity:0;transform:translateX(10px) scale(.985)}100%{opacity:1;transform:translateX(0) scale(1)}}
+      @keyframes subtitleIn{from{opacity:0;transform:translateY(8px)}to{opacity:.76;transform:translateY(0)}}
+      @media(prefers-reduced-motion:reduce){.letter,.symbol,.subtitle{animation:none;opacity:1;transform:none}}
+    </style>
+  </defs>
+
+  <g fill="url(#graphiteGlass)" stroke="url(#glassEdge)" stroke-width="1.15" font-family="Arial, Helvetica, sans-serif" font-size="274" font-weight="200">
+    <text class="letter l1" x="72" y="285">I</text>
+    <text class="letter l2" x="160" y="285">I</text>
+    <text class="letter l3" x="246" y="285">S</text>
+    <text class="letter l4" x="421" y="285">P</text>
+    <text class="letter l5" x="594" y="285">C</text>
+  </g>
+
+  <!-- The pictorial mark is the exact original IISPC artwork, clipped from the
+       public transparent master. No paths, nodes, or proportions are redrawn. -->
+  <g class="symbol" clip-path="url(#symbolCrop)">
+    <image href="iispc-original-transparent.png" x="128" y="-88" width="972.8" height="486.4" preserveAspectRatio="none"/>
+  </g>
+  <g class="symbol" fill="#b52a91" stroke="#f3eaf0" stroke-width="1.2">
+    <circle cx="693" cy="147" r="6.2"/>
+    <circle cx="725" cy="115" r="6.7"/>
+    <circle cx="731" cy="162" r="10.5"/>
+    <circle cx="719" cy="208" r="6.4"/>
+  </g>
+
+  <g class="subtitle" fill="#37393e" font-family="Arial, Helvetica, sans-serif" font-size="47" font-weight="300" text-anchor="middle" letter-spacing=".4">
+    <text x="500" y="384">МЕЖДУНАРОДНЫЙ ИНСТИТУТ</text>
+    <text x="500" y="448">СОЦИАЛЬНОЙ ПСИХОТЕРАПИИ</text>
+    <text x="500" y="512">И КОНСУЛЬТИРОВАНИЯ</text>
+  </g>
+</svg>
