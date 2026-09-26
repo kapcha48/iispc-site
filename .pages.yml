@@ -14,111 +14,119 @@ content:
     type: collection
     path: content/news
     format: yaml-frontmatter
-    filename: "{fields.slug}.md"
+    filename:
+      template: "{primary}.md"
+      field: false
+    operations: { rename: false, delete: false }
     view:
-      fields: [title, status, publishedAt]
+      fields: [title, publishedAt]
       primary: title
       sort: [publishedAt, title]
       search: [title, excerpt, body]
     fields:
-      - { name: title, label: Заголовок, type: string, required: true }
-      - { name: slug, label: Адрес страницы, type: string, required: true, pattern: "^[a-z0-9-]+$" }
+      - { name: title, label: Заголовок новости, type: string, required: true, description: "Короткий и понятный заголовок — так его увидят посетители сайта." }
+      - { name: slug, label: Технический адрес, type: string, hidden: true }
       - &status_field
         name: status
-        label: Статус
+        label: Публикация
         type: select
         required: true
         default: draft
+        description: "Оставьте черновик, пока материал не готов. Выберите «Опубликовано», когда его можно показывать на сайте."
         options:
           values:
             - { value: draft, label: Черновик }
             - { value: published, label: Опубликовано }
             - { value: archived, label: Архив }
-      - { name: excerpt, label: Краткое описание, type: text }
-      - { name: cover, label: Обложка, type: image }
-      - { name: coverAlt, label: Описание изображения, type: string }
-      - { name: publishedAt, label: Дата публикации, type: date, options: { time: true } }
-      - { name: sourceUrl, label: Ссылка на источник, type: string }
-      - { name: body, label: Текст материала, type: rich-text }
+      - { name: excerpt, label: Краткое описание, type: text, required: true, description: "Два–три предложения для карточки новости." }
+      - { name: cover, label: Главное изображение, type: image, description: "Выберите фотографию, которая будет показана в карточке новости." }
+      - { name: coverAlt, label: Что изображено на фотографии, type: string, description: "Кратко опишите фото для людей, использующих экранное чтение." }
+      - { name: body, label: Полный текст новости, type: rich-text, required: true }
+      - { name: publishedAt, label: Дата публикации, type: date, options: { time: true }, description: "Можно оставить текущую дату или указать дату события." }
+      - { name: sourceUrl, label: Ссылка на старый сайт, type: string, hidden: true }
 
   - name: events
     label: Мероприятия
     type: collection
     path: content/events
     format: yaml-frontmatter
-    filename: "{fields.slug}.md"
-    view: { fields: [title, status, eventDate], primary: title, sort: [eventDate, title], search: [title, excerpt, body, location] }
+    filename: { template: "{primary}.md", field: false }
+    operations: { rename: false, delete: false }
+    view: { fields: [title, eventDate, location], primary: title, sort: [eventDate, title], search: [title, excerpt, body, location] }
     fields:
-      - { name: title, label: Название, type: string, required: true }
-      - { name: slug, label: Адрес страницы, type: string, required: true, pattern: "^[a-z0-9-]+$" }
+      - { name: title, label: Название мероприятия, type: string, required: true, description: "Название, которое увидят посетители в календаре." }
+      - { name: slug, label: Технический адрес, type: string, hidden: true }
       - *status_field
-      - { name: excerpt, label: Краткое описание, type: text }
-      - { name: cover, label: Обложка, type: image }
-      - { name: coverAlt, label: Описание изображения, type: string }
-      - { name: eventDate, label: Начало, type: date, options: { time: true } }
-      - { name: endDate, label: Окончание, type: date, options: { time: true } }
+      - { name: excerpt, label: Краткое описание, type: text, required: true, description: "Что это за мероприятие и для кого оно предназначено." }
+      - { name: cover, label: Главное изображение, type: image }
+      - { name: coverAlt, label: Что изображено на фотографии, type: string }
+      - { name: eventDate, label: Дата и время начала, type: date, required: true, options: { time: true } }
+      - { name: endDate, label: Дата и время окончания, type: date, options: { time: true } }
       - name: format
         label: Формат
         type: select
         options: { values: [{ value: offline, label: Очно }, { value: online, label: Онлайн }, { value: hybrid, label: Смешанный }] }
-      - { name: location, label: Место проведения, type: string }
-      - { name: registrationUrl, label: Ссылка для регистрации, type: string }
-      - { name: body, label: Описание мероприятия, type: rich-text }
+      - { name: location, label: Место проведения, type: string, description: "Например: Алматы, IISPC или Онлайн." }
+      - { name: registrationUrl, label: Ссылка для регистрации, type: string, description: "Оставьте пустым, если регистрация не требуется." }
+      - { name: body, label: Полное описание мероприятия, type: rich-text, required: true }
 
   - name: programs
     label: Образовательные программы
     type: collection
     path: content/programs
     format: yaml-frontmatter
-    filename: "{fields.slug}.md"
-    view: { fields: [title, status, programType], primary: title, search: [title, excerpt, body] }
+    filename: { template: "{primary}.md", field: false }
+    operations: { rename: false, delete: false }
+    view: { fields: [title, programType, duration], primary: title, search: [title, excerpt, body] }
     fields:
-      - { name: title, label: Название, type: string, required: true }
-      - { name: slug, label: Адрес страницы, type: string, required: true, pattern: "^[a-z0-9-]+$" }
+      - { name: title, label: Название программы, type: string, required: true }
+      - { name: slug, label: Технический адрес, type: string, hidden: true }
       - *status_field
-      - { name: excerpt, label: Краткое описание, type: text }
-      - { name: cover, label: Обложка, type: image }
-      - { name: coverAlt, label: Описание изображения, type: string }
-      - { name: programType, label: Тип программы, type: string }
-      - { name: duration, label: Продолжительность, type: string }
-      - { name: document, label: Документ программы, type: file }
-      - { name: admission, label: Условия поступления, type: rich-text }
-      - { name: body, label: Описание программы, type: rich-text }
+      - { name: excerpt, label: Кратко о программе, type: text, required: true, description: "Главная польза программы и её целевая аудитория." }
+      - { name: cover, label: Главное изображение, type: image }
+      - { name: coverAlt, label: Что изображено на фотографии, type: string }
+      - { name: programType, label: Тип обучения, type: string, description: "Например: переподготовка, повышение квалификации или семинар." }
+      - { name: duration, label: Продолжительность, type: string, description: "Например: 6 месяцев или 72 академических часа." }
+      - { name: admission, label: Как поступить, type: rich-text }
+      - { name: body, label: Полное описание программы, type: rich-text, required: true }
+      - { name: document, label: Документ программы, type: file, description: "Необязательно: программа курса или информационный файл PDF." }
 
   - name: publications
     label: Научные публикации
     type: collection
     path: content/publications
     format: yaml-frontmatter
-    filename: "{fields.slug}.md"
-    view: { fields: [title, status, year], primary: title, sort: [year, title], search: [title, authors, excerpt, body] }
+    filename: { template: "{primary}.md", field: false }
+    operations: { rename: false, delete: false }
+    view: { fields: [title, authors, year], primary: title, sort: [year, title], search: [title, authors, excerpt, body] }
     fields:
-      - { name: title, label: Название, type: string, required: true }
-      - { name: slug, label: Адрес страницы, type: string, required: true, pattern: "^[a-z0-9-]+$" }
+      - { name: title, label: Название публикации, type: string, required: true }
+      - { name: slug, label: Технический адрес, type: string, hidden: true }
       - *status_field
-      - { name: excerpt, label: Краткое описание, type: text }
+      - { name: authors, label: Авторы, type: string, description: "Укажите авторов в том порядке, в котором они должны отображаться." }
+      - { name: year, label: Год публикации, type: number }
+      - { name: excerpt, label: Краткая аннотация, type: text }
       - { name: cover, label: Обложка, type: image }
-      - { name: coverAlt, label: Описание изображения, type: string }
-      - { name: authors, label: Авторы, type: string }
-      - { name: year, label: Год, type: number }
-      - { name: file, label: Файл публикации, type: file }
-      - { name: externalUrl, label: Внешняя ссылка, type: string }
-      - { name: body, label: Аннотация или текст, type: rich-text }
+      - { name: coverAlt, label: Описание обложки, type: string }
+      - { name: body, label: Аннотация или полный текст, type: rich-text }
+      - { name: file, label: Файл публикации, type: file, description: "Загрузите PDF, если его можно распространять через сайт." }
+      - { name: externalUrl, label: Ссылка на публикацию, type: string, description: "Ссылка на журнал или внешний научный ресурс." }
 
   - name: galleries
     label: Фотогалереи
     type: collection
     path: content/galleries
     format: yaml-frontmatter
-    filename: "{fields.slug}.md"
-    view: { fields: [title, status, eventDate], primary: title, search: [title, excerpt] }
+    filename: { template: "{primary}.md", field: false }
+    operations: { rename: false, delete: false }
+    view: { fields: [title, eventDate], primary: title, search: [title, excerpt] }
     fields:
-      - { name: title, label: Название, type: string, required: true }
-      - { name: slug, label: Адрес страницы, type: string, required: true, pattern: "^[a-z0-9-]+$" }
+      - { name: title, label: Название фотогалереи, type: string, required: true }
+      - { name: slug, label: Технический адрес, type: string, hidden: true }
       - *status_field
-      - { name: excerpt, label: Описание, type: text }
-      - { name: eventDate, label: Дата, type: date, options: { time: true } }
-      - { name: images, label: Фотографии, type: image, list: true }
+      - { name: excerpt, label: Краткое описание, type: text, required: true }
+      - { name: eventDate, label: Дата события, type: date, options: { time: false } }
+      - { name: images, label: Фотографии, type: image, list: true, description: "Добавьте фотографии в желаемом порядке показа." }
       - { name: body, label: Дополнительный текст, type: rich-text }
 
   - name: people
@@ -126,18 +134,19 @@ content:
     type: collection
     path: content/people
     format: yaml-frontmatter
-    filename: "{fields.slug}.md"
+    filename: { template: "{primary}.md", field: false }
+    operations: { rename: false, delete: false }
     view: { fields: [title, role, group, order], primary: title, sort: [order, title], search: [title, role, degree, body] }
     fields:
       - { name: title, label: ФИО, type: string, required: true }
-      - { name: slug, label: Адрес, type: string, required: true, pattern: "^[a-z0-9-]+$" }
+      - { name: slug, label: Технический адрес, type: string, hidden: true }
       - *status_field
       - { name: role, label: Должность, type: string }
       - { name: degree, label: Учёная степень, type: string }
-      - { name: group, label: Группа, type: string }
-      - { name: order, label: Порядок, type: number, default: 0 }
+      - { name: group, label: Раздел команды, type: string, description: "Например: руководство, учёный совет или преподаватели." }
+      - { name: order, label: Порядок показа, type: number, default: 0, description: "Меньшее число показывается выше." }
       - { name: cover, label: Фотография, type: image }
-      - { name: coverAlt, label: Описание фотографии, type: string }
+      - { name: coverAlt, label: Описание фотографии, type: string, description: "Например: портрет Натальи Михайловны Клюжиной." }
       - { name: excerpt, label: Краткая информация, type: text }
       - { name: body, label: Биография, type: rich-text }
 
@@ -146,15 +155,16 @@ content:
     type: collection
     path: content/pages
     format: yaml-frontmatter
-    filename: "{fields.slug}.md"
-    view: { fields: [title, section, status], primary: title, search: [title, excerpt, body] }
+    filename: { template: "{primary}.md", field: false }
+    operations: { create: false, rename: false, delete: false }
+    view: { fields: [title, section], primary: title, search: [title, excerpt, body] }
     fields:
       - { name: title, label: Название, type: string, required: true }
-      - { name: slug, label: Адрес страницы, type: string, required: true, pattern: "^[a-z0-9-]+$" }
+      - { name: slug, label: Технический адрес, type: string, hidden: true }
       - *status_field
-      - { name: section, label: Раздел, type: string }
-      - { name: excerpt, label: Краткое описание, type: text }
+      - { name: section, label: Раздел сайта, type: string, readonly: true }
+      - { name: excerpt, label: Краткое описание страницы, type: text }
       - { name: cover, label: Обложка, type: image }
-      - { name: coverAlt, label: Описание изображения, type: string }
-      - { name: sourceUrl, label: Старый адрес, type: string }
-      - { name: body, label: Содержание, type: rich-text }
+      - { name: coverAlt, label: Что изображено на обложке, type: string }
+      - { name: sourceUrl, label: Старый адрес, type: string, hidden: true }
+      - { name: body, label: Содержание страницы, type: rich-text, required: true }
