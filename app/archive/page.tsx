@@ -1,7 +1,8 @@
 import { PageHero } from "../components/PageHero";
 import { SectionNav } from "../components/SectionNav";
+import { listEditorialArchiveItems } from "../lib/editorial-pages";
 import { pageMetadata } from "../lib/page-metadata";
-import { sourceArchive, sourceArchiveItems } from "../lib/source-archive";
+import { sourceArchive } from "../lib/source-archive";
 
 export const metadata = pageMetadata({
   title: "Архив прежнего сайта",
@@ -16,17 +17,19 @@ const groups = [
 ] as const;
 
 export default function SourceArchivePage() {
+  const itemsByKind = listEditorialArchiveItems();
+  const savedFiles = sourceArchive.stats.downloaded + sourceArchive.stats.existing;
   return (
     <>
       <PageHero
         eyebrow="Архив IISPC"
         title="Материалы прежней версии сайта"
-        lead={`Сохранены ${sourceArchive.stats.pages} страницы, ${sourceArchive.stats.posts} новостей, ${sourceArchive.stats.courses} учебных программ и ${sourceArchive.stats.media} связанных оригинальных файлов.`}
+        lead={`Страницы, новости и учебные программы прежнего сайта. Сохранено ${savedFiles} связанных файлов.`}
         action={{ href: "#archive-pages", label: "Открыть архив" }}
       />
       <SectionNav items={groups.map((group) => ({ href: `#${group.id}`, label: group.label }))} />
       {groups.map((group, groupIndex) => {
-        const items = sourceArchiveItems.filter((item) => item.kind === group.kind);
+        const items = itemsByKind.filter((item) => item.kind === group.kind);
         return (
           <section className={`section source-archive-section${groupIndex % 2 ? " section-soft" : ""}`} id={group.id} key={group.kind}>
             <div className="shell">

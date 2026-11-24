@@ -2,11 +2,21 @@ media:
   input: public/archive/source
   output: /archive/source
   categories: [image, document, video]
-  extensions: [jpg, jpeg, png, webp, gif, svg, pdf, doc, docx, mp4, webm]
+  extensions: [jpg, jpeg, png, webp, gif, pdf, doc, docx, mp4, webm]
 
 settings:
   content:
     merge: true
+
+actions:
+  - name: publish-preview
+    label: Опубликовать проверенные правки
+    ref: main
+    workflow: publish-site.yml
+    confirm:
+      title: Опубликовать правки на сайте?
+      message: "Запускайте в версии preview после проверки страницы. Материалы со статусом «Черновик» или «Архив» не выводятся на сайт."
+      button: Опубликовать
 
 content:
   - name: news
@@ -87,8 +97,15 @@ content:
       - { name: coverAlt, label: Что изображено на фотографии, type: string }
       - { name: programType, label: Тип обучения, type: string, description: "Например: переподготовка, повышение квалификации или семинар." }
       - { name: duration, label: Продолжительность, type: string, description: "Например: 6 месяцев или 72 академических часа." }
+      - { name: programFormat, label: Формат занятий, type: string, description: "Например: очно в Алматы или онлайн." }
+      - { name: audience, label: Для кого программа, type: text }
+      - { name: intake, label: Информация о наборе, type: string, description: "Например: открыт набор до 15 августа или даты уточняются." }
+      - { name: credential, label: Что выдаётся по окончании, type: text }
+      - { name: registrationUrl, label: Ссылка на запись, type: string, description: "Вставьте ссылку, начинающуюся с https://. Если оставить поле пустым, посетители смогут обратиться в институт." }
       - { name: admission, label: Как поступить, type: rich-text }
       - { name: body, label: Полное описание программы, type: rich-text, required: true }
+      - { name: outcomes, label: Чему научатся участники, type: string, list: true }
+      - { name: modules, label: Темы программы, type: string, list: true }
       - { name: document, label: Документ программы, type: file, description: "Необязательно: программа курса или информационный файл PDF." }
 
   - name: publications
@@ -130,7 +147,7 @@ content:
       - { name: body, label: Дополнительный текст, type: rich-text }
 
   - name: people
-    label: О нас — люди института
+    label: Сотрудники и представители
     type: collection
     path: content/people
     format: yaml-frontmatter
@@ -143,7 +160,16 @@ content:
       - *status_field
       - { name: role, label: Должность, type: string }
       - { name: degree, label: Учёная степень, type: string }
-      - { name: group, label: Раздел команды, type: string, description: "Например: руководство, учёный совет или преподаватели." }
+      - name: group
+        label: Где показывать карточку
+        type: select
+        default: faculty
+        options:
+          values:
+            - { value: leadership, label: Руководство }
+            - { value: faculty, label: Преподаватели }
+            - { value: representatives, label: Региональные представители }
+      - { name: location, label: Город и страна, type: string, description: "Для региональных представителей." }
       - { name: order, label: Порядок показа, type: number, default: 0, description: "Меньшее число показывается выше." }
       - { name: cover, label: Фотография, type: image }
       - { name: coverAlt, label: Описание фотографии, type: string, description: "Например: портрет Натальи Михайловны Клюжиной." }
@@ -168,3 +194,16 @@ content:
       - { name: coverAlt, label: Что изображено на обложке, type: string }
       - { name: sourceUrl, label: Старый адрес, type: string, hidden: true }
       - { name: body, label: Содержание страницы, type: rich-text, required: true }
+
+  - name: sections
+    label: Заголовки основных разделов
+    type: collection
+    path: content/sections
+    format: yaml-frontmatter
+    filename: { template: "{primary}.md", field: false }
+    operations: { create: false, rename: false, delete: false }
+    view: { fields: [section, title], primary: section, search: [section, title, excerpt] }
+    fields:
+      - { name: section, label: Раздел сайта, type: string, readonly: true }
+      - { name: title, label: Заголовок, type: string, required: true }
+      - { name: excerpt, label: Текст под заголовком, type: text, required: true }

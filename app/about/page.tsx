@@ -1,6 +1,8 @@
+import { sectionCopy } from "../lib/editorial-content";
 import { PageHero } from "../components/PageHero";
+import { PersonBiography, PersonCard, PersonPortrait } from "../components/PersonCard";
 import { SectionNav } from "../components/SectionNav";
-import { faculty, leadership, representatives } from "../data";
+import { listPeople } from "../lib/editorial-people";
 import { pageMetadata } from "../lib/page-metadata";
 
 export const metadata = pageMetadata({
@@ -9,25 +11,17 @@ export const metadata = pageMetadata({
   path: "/about",
 });
 
-function PersonCard({ person, index }: { person: (typeof faculty)[number] | (typeof leadership)[number]; index: number }) {
-  return (
-    <article>
-      <div className="faculty-monogram" aria-hidden="true">{person.name.split(" ").slice(0, 2).map((part) => part[0]).join("")}</div>
-      <span>{String(index + 1).padStart(2, "0")}</span>
-      <h3>{person.name}</h3>
-      {person.degree ? <p>{person.degree}</p> : null}
-      <small>{person.role}</small>
-    </article>
-  );
-}
-
 export default function AboutPage() {
+  const copy = sectionCopy("about");
+  const leadership = listPeople("leadership");
+  const faculty = listPeople("faculty");
+  const representatives = listPeople("representatives");
   return (
     <>
       <PageHero
         eyebrow="О нас"
-        title="Международный институт социальной психотерапии и консультирования"
-        lead="Здесь собрана официальная информация об институте, его руководстве, преподавателях и региональных представителях."
+        title={copy.title}
+        lead={copy.lead}
         action={{ href: "#about-institute", label: "Об институте" }}
       />
       <SectionNav items={[
@@ -63,7 +57,11 @@ export default function AboutPage() {
             <div><p className="eyebrow">Руководство</p><h2>Наш Институт активно растёт и развивается</h2></div>
             <a className="text-link" href="/contacts">Связаться с институтом <span>→</span></a>
           </div>
-          <div className="faculty-grid leadership-grid">{leadership.map((person, index) => <PersonCard key={person.name} person={person} index={index} />)}</div>
+          {leadership.length ? (
+            <div className="faculty-grid leadership-grid">
+              {leadership.map((person, index) => <PersonCard key={person.slug} person={person} index={index} />)}
+            </div>
+          ) : <p>Сведения о руководстве обновляются.</p>}
         </div>
       </section>
 
@@ -73,7 +71,11 @@ export default function AboutPage() {
             <div><p className="eyebrow">Преподавательский состав</p><h2>Лучшие специалисты в своей области</h2></div>
             <p>Специалисты, которые ведут образовательные программы и развивают профессиональное сообщество IISPC.</p>
           </div>
-          <div className="faculty-grid">{faculty.map((person, index) => <PersonCard key={`${person.name}-${index}`} person={person} index={index} />)}</div>
+          {faculty.length ? (
+            <div className="faculty-grid">
+              {faculty.map((person, index) => <PersonCard key={person.slug} person={person} index={index} />)}
+            </div>
+          ) : <p>Список преподавателей обновляется.</p>}
         </div>
       </section>
 
@@ -83,16 +85,20 @@ export default function AboutPage() {
             <div><p className="eyebrow">Региональные представители</p><h2>Представители IISPC</h2></div>
             <p>Представительства института в разных городах и странах.</p>
           </div>
-          <ol className="representative-grid">
+          {representatives.length ? <ol className="representative-grid">
             {representatives.map((representative, index) => (
-              <li key={`${representative.location}-${representative.name}`}>
+              <li key={representative.slug}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <p>{representative.location}</p>
+                <PersonPortrait person={representative} compact />
+                {representative.location ? <p>{representative.location}</p> : null}
                 <h3>{representative.name}</h3>
-                {representative.description ? <small>{representative.description}</small> : null}
+                {representative.degree ? <p>{representative.degree}</p> : null}
+                {representative.role ? <p>{representative.role}</p> : null}
+                {representative.excerpt ? <small>{representative.excerpt}</small> : null}
+                <PersonBiography person={representative} />
               </li>
             ))}
-          </ol>
+          </ol> : <p>Список представителей обновляется.</p>}
         </div>
       </section>
 

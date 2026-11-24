@@ -1,17 +1,15 @@
+import { notFound } from "next/navigation";
 import { LegacyArchivePage } from "../../components/LegacyArchivePage";
-import { getLegacyPage } from "../../lib/legacy-pages";
-import { pageMetadata } from "../../lib/page-metadata";
+import { getEditorialLegacyPage } from "../../lib/editorial-pages";
+import { missingPageMetadata, pageMetadata } from "../../lib/page-metadata";
 
-const page = getLegacyPage("science", "council")!;
+const page = getEditorialLegacyPage("science", "council");
 
-export const metadata = pageMetadata({
-  title: page.title,
-  description: page.excerpt,
-  path: "/science/council",
-  image: page.coverUrl,
-  imageAlt: page.title,
-});
+export const metadata = page
+  ? pageMetadata({ title: page.title, description: page.excerpt, path: "/science/council", image: page.coverUrl, imageAlt: page.coverAlt || page.title })
+  : missingPageMetadata("Страница не найдена");
 
 export default function ScienceCouncilPage() {
+  if (!page) notFound();
   return <LegacyArchivePage page={page} sectionTitle="Научная деятельность" sectionHref="/science" />;
 }

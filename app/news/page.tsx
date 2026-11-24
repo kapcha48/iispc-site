@@ -1,3 +1,4 @@
+import { sectionCopy } from "../lib/editorial-content";
 import Image from "next/image";
 import { PageHero } from "../components/PageHero";
 import { listPublishedContent } from "../lib/content-store";
@@ -13,12 +14,13 @@ export const metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function NewsPage() {
+  const copy = sectionCopy("news");
   const items = await listPublishedContent("news");
   const managedSlugs = new Set(items.map((item) => item.slug));
   const archivedItems = items.length ? [] : newsArchive.filter((item) => !managedSlugs.has(item.slug));
   return (
     <>
-      <PageHero eyebrow="Новости" title="Актуальная жизнь института" lead="Новые наборы, анонсы, результаты мероприятий, проекты и важные объявления IISPC." action={{ href: "#news-feed", label: "Перейти к материалам" }} />
+      <PageHero eyebrow="Новости" title={copy.title} lead={copy.lead} action={{ href: "#news-feed", label: "Перейти к материалам" }} />
       <nav className="content-subnav" aria-label="Материалы института"><div className="shell"><span>Материалы:</span><a aria-current="page" href="/news">Новости</a><a href="/gallery">Фотогалерея</a></div></nav>
       <section className="section news-index" id="news-feed">
         <div className="shell">

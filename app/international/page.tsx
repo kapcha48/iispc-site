@@ -1,8 +1,10 @@
+import { sectionCopy } from "../lib/editorial-content";
 import { Breadcrumbs } from "../components/Breadcrumbs";
+import { PersonBiography, PersonPortrait } from "../components/PersonCard";
 import { SectionNav } from "../components/SectionNav";
-import { representatives } from "../data";
+import { listEditorialTravelPrograms } from "../lib/editorial-pages";
+import { listPeople } from "../lib/editorial-people";
 import { pageMetadata } from "../lib/page-metadata";
-import { travelArchive } from "../lib/travel-archive";
 
 export const metadata = pageMetadata({
   title: "Международная деятельность",
@@ -11,6 +13,9 @@ export const metadata = pageMetadata({
 });
 
 export default function InternationalPage() {
+  const copy = sectionCopy("international");
+  const representatives = listPeople("representatives");
+  const travelPrograms = listEditorialTravelPrograms();
   return (
     <div className="international-page-v2">
       <section className="international-masthead">
@@ -22,12 +27,12 @@ export default function InternationalPage() {
           <div className="international-masthead-grid">
             <div>
               <p className="eyebrow">Международная деятельность</p>
-              <h1>Научный и образовательный туризм IISPC</h1>
+              <h1>{copy.title}</h1>
             </div>
             <div className="international-masthead-aside">
-              <p>Программы научного и образовательного туризма в интересные страны и экзотические части света со специальными психотерапевтическими программами.</p>
+              <p>{copy.lead}</p>
               <dl className="international-masthead-facts" aria-label="Опубликованные сведения">
-                <div><dt>Архивные программы</dt><dd>{String(travelArchive.length).padStart(2, "0")}</dd></div>
+                <div><dt>Архивные программы</dt><dd>{String(travelPrograms.length).padStart(2, "0")}</dd></div>
                 <div><dt>Региональные представители</dt><dd>{String(representatives.length).padStart(2, "0")}</dd></div>
               </dl>
               <a href="#international-projects">Смотреть программы <span aria-hidden="true">↓</span></a>
@@ -46,10 +51,10 @@ export default function InternationalPage() {
           <p className="international-section-kicker"><span>01</span><span>Путешествия</span></p>
           <div className="international-section-heading">
             <h2>Опубликованные программы и экспедиции</h2>
-            <p>Четыре завершённые программы 2023 года — маршруты, образовательные темы и подробное расписание.</p>
+            <p>Маршруты, образовательные темы и подробное расписание завершённых программ.</p>
           </div>
           <div className="international-project-list">
-            {travelArchive.map((project, index) => (
+            {travelPrograms.map((project, index) => (
               <article key={project.slug}>
                 <div className="international-project-copy">
                   <div className="international-project-meta">
@@ -63,6 +68,7 @@ export default function InternationalPage() {
                 </div>
               </article>
             ))}
+            {!travelPrograms.length ? <p>Список программ обновляется.</p> : null}
           </div>
         </div>
       </section>
@@ -74,18 +80,22 @@ export default function InternationalPage() {
             <h2>Региональные представители IISPC</h2>
             <p>Представительства института в разных городах и странах.</p>
           </div>
-          <ol className="international-region-list international-representative-list" aria-label="Региональные представители IISPC">
+          {representatives.length ? <ol className="international-region-list international-representative-list" aria-label="Региональные представители IISPC">
             {representatives.map((representative, index) => (
-              <li key={`${representative.location}-${representative.name}`}>
+              <li key={representative.slug}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
-                  <strong>{representative.location}</strong>
+                  <PersonPortrait person={representative} compact />
+                  {representative.location ? <strong>{representative.location}</strong> : null}
                   <p>{representative.name}</p>
-                  <small>{representative.description}</small>
+                  {representative.degree ? <small>{representative.degree}</small> : null}
+                  {representative.role ? <small>{representative.role}</small> : null}
+                  {representative.excerpt ? <small>{representative.excerpt}</small> : null}
+                  <PersonBiography person={representative} />
                 </div>
               </li>
             ))}
-          </ol>
+          </ol> : <p>Список представителей обновляется.</p>}
         </div>
       </section>
     </div>

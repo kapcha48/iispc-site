@@ -39,6 +39,12 @@ export default function RootLayout({
     <html lang="ru">
       <body>
         <a className="skip-link" href="#main-content">Перейти к содержанию</a>
+        {process.env.IISPC_PREVIEW === "1" && (
+          <aside className="editorial-preview-banner" aria-label="Предпросмотр сайта">
+            <strong>Предпросмотр сайта</strong>
+            <a href="https://app.pagescms.org/kapcha48/iispc-site/preview">Вернуться в редактор</a>
+          </aside>
+        )}
         <SiteHeader />
         <main id="main-content" tabIndex={-1}>{children}</main>
         <SiteFooter />

@@ -44,3 +44,5 @@ yarn-error.log*
 # Local-only migration safety copies. The free production CMS uses /content.
 /payload-cms/
 /migration-backups/
+/app/content/editorial-content.json
+/pages-output/

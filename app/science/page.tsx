@@ -1,3 +1,4 @@
+import { sectionCopy } from "../lib/editorial-content";
 import { PageHero } from "../components/PageHero";
 import { SectionNav } from "../components/SectionNav";
 import { publications } from "../data";
@@ -14,12 +15,13 @@ export const metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function SciencePage() {
+  const copy = sectionCopy("science");
   const managedPublications = await listPublishedContent("publication");
   const managedSlugs = new Set(managedPublications.map((item) => item.slug));
   const archivedPublications = managedPublications.length ? [] : publicationArchive.filter((item) => !managedSlugs.has(item.slug));
   return (
     <>
-      <PageHero eyebrow="Наука" title="Научная деятельность IISPC" lead="Международный учёный совет по психотерапии, Международная академия научной психотерапии, научно-исследовательские проекты и публикации." action={{ href: "#science-work", label: "Смотреть разделы" }} />
+      <PageHero eyebrow="Наука" title={copy.title} lead={copy.lead} action={{ href: "#science-work", label: "Смотреть разделы" }} />
       <SectionNav items={[{ href: "#science-work", label: "Разделы науки" }, { href: "#science-publications", label: "Публикации" }]} />
       <section className="section science-pillars" id="science-work">
         <div className="shell">

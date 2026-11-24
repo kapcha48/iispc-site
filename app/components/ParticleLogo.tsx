@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { withStaticBase } from "../lib/static-path";
 import OriginkitSvgParticles from "./OriginkitSvgParticles";
 
-const ANIMATED_LOGO_SOURCE = "/iispc-symbol-profile.png";
-const STATIC_LOGO_SOURCE = "/iispc-symbol-approved-original.png";
+const ANIMATED_LOGO_SOURCE = withStaticBase("/iispc-symbol-profile.png");
+const STATIC_LOGO_SOURCE = withStaticBase("/iispc-symbol-approved-original.png");
 
 export function ParticleLogo() {
   const [staticLogo, setStaticLogo] = useState(true);

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { withStaticBase } from "../lib/static-path";
 
 export function Logo({
   className = "",
@@ -10,7 +11,7 @@ export function Logo({
   return (
     <Image
       className={className}
-      src="/iispc-logo-approved.svg"
+      src={withStaticBase("/iispc-logo-approved.svg")}
       alt="IISPC — Международный институт социальной психотерапии и консультирования"
       width={1792}
       height={896}

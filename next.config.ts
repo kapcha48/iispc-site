@@ -41,6 +41,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: process.env.IISPC_STATIC_HOST === "1",
     dangerouslyAllowLocalIP: Boolean(isLocalCms),
     remotePatterns: [
       {

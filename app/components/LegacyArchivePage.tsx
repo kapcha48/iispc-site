@@ -1,9 +1,11 @@
 import Image from "next/image";
 import { Breadcrumbs } from "./Breadcrumbs";
+import EditorialMarkdown from "./EditorialMarkdown";
+import type { EditorialPage } from "../lib/editorial-pages";
 import type { LegacyPage } from "../lib/legacy-pages";
 
-export function LegacyArchivePage({ page, sectionTitle, sectionHref }: { page: LegacyPage; sectionTitle: string; sectionHref: string }) {
-  const bodyHtml = page.coverUrl
+export function LegacyArchivePage({ page, sectionTitle, sectionHref }: { page: EditorialPage<LegacyPage>; sectionTitle: string; sectionHref: string }) {
+  const bodyHtml = page.coverUrl && page.coverUrl === page.originalCoverUrl
     ? page.html
       .replace(/<img[^>]+src="[^"]+"[^>]*>/i, "")
       .replace(/<a[^>]*>\s*<\/a>/i, "")
@@ -19,8 +21,10 @@ export function LegacyArchivePage({ page, sectionTitle, sectionHref }: { page: L
           <p className="article-intro">{page.excerpt}</p>
         </div>
       </header>
-      {page.coverUrl ? <div className="shell article-cover"><Image src={page.coverUrl} alt="" width={1600} height={900} sizes="(max-width: 1080px) 100vw, 1080px" /></div> : null}
-      <div className="shell article-body archive-publication-body" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+      {page.coverUrl ? <div className="shell article-cover"><Image src={page.coverUrl} alt={page.coverAlt} width={1600} height={900} sizes="(max-width: 1080px) 100vw, 1080px" unoptimized /></div> : null}
+      {page.editorialBody === undefined
+        ? <div className="shell article-body archive-publication-body" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+        : <div className="shell article-body archive-publication-body"><EditorialMarkdown source={page.editorialBody} /></div>}
       <div className="shell article-source"><a className="text-link" href={sectionHref}>Вернуться в раздел <span aria-hidden="true">→</span></a></div>
     </article>
   );

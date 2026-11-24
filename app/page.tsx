@@ -1,12 +1,17 @@
 import Image from "next/image";
-import { archivedEvents, faculty, programs, publications } from "./data";
+import { archivedEvents, publications } from "./data";
 import { ParticleLogo } from "./components/ParticleLogo";
+import { PersonCard } from "./components/PersonCard";
 import { listPublishedContent } from "./lib/content-store";
+import { listPeople } from "./lib/editorial-people";
+import { listPrograms } from "./lib/editorial-programs";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const latestNews = await listPublishedContent("news", 3);
+  const programs = listPrograms();
+  const faculty = listPeople("faculty");
   return (
     <>
       <section className="origin-hero">
@@ -147,7 +152,7 @@ export default async function Home() {
       <section className="section section-soft">
         <div className="shell">
           <div className="section-heading split-heading"><div><p className="eyebrow">Руководство и эксперты</p><h2>Опыт, который поддерживает обучение</h2></div><a className="text-link" href="/about">Познакомиться с институтом <span>→</span></a></div>
-          <div className="faculty-grid">{faculty.map((person, index) => <article key={person.name}><div className="faculty-monogram">{person.name.split(" ").slice(0,2).map(x=>x[0]).join("")}</div><span>0{index+1}</span><h3>{person.name}</h3>{person.degree ? <p>{person.degree}</p> : null}<small>{person.role}</small></article>)}</div>
+          <div className="faculty-grid">{faculty.map((person, index) => <PersonCard key={person.slug} person={person} index={index} />)}</div>
         </div>
       </section>
     </>

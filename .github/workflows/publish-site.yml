@@ -1,0 +1,116 @@
+name: Публикация сайта IISPC
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["Сохранение правок для предпросмотра"]
+    branches: [preview]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: Данные команды из Pages CMS. Для ручной пересборки оставьте пустым.
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: iispc-github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      main_sha: ${{ steps.select.outputs.main_sha }}
+      preview_sha: ${{ steps.select.outputs.preview_sha }}
+      promote: ${{ steps.select.outputs.promote }}
+    steps:
+      - name: Check out site templates
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+      - name: Select revisions
+        id: select
+        env:
+          CMS_PAYLOAD: ${{ inputs.payload }}
+        run: node scripts/select-editorial-release.mjs
+      - name: Install exact dependencies
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+      - name: Build main site
+        env:
+          IISPC_STATIC_HOST: "1"
+          NEXT_PUBLIC_IISPC_STATIC_BASE: /iispc-site
+          PROMOTE: ${{ steps.select.outputs.promote }}
+          REVIEWED_SHA: ${{ steps.select.outputs.preview_sha }}
+        run: |
+          if [[ "$PROMOTE" == 'true' ]]; then
+            git restore --source "$REVIEWED_SHA" --worktree -- content public/archive/source
+          fi
+          pnpm test
+          node scripts/export-github-pages.mjs --base /iispc-site --out pages-output/site
+      - name: Build editorial preview
+        env:
+          IISPC_STATIC_HOST: "1"
+          IISPC_PREVIEW: "1"
+          NEXT_PUBLIC_IISPC_STATIC_BASE: /iispc-site/preview
+          REVIEWED_SHA: ${{ steps.select.outputs.preview_sha }}
+        run: |
+          git restore --source "$REVIEWED_SHA" --worktree -- content public/archive/source
+          pnpm build
+          node scripts/export-github-pages.mjs --base /iispc-site/preview --out pages-output/site/preview
+      - name: Upload the verified site and preview
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: pages-output/site
+
+  promote:
+    if: needs.build.outputs.promote == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Save the reviewed revision to main
+        env:
+          MAIN_SHA: ${{ needs.build.outputs.main_sha }}
+          REVIEWED_SHA: ${{ needs.build.outputs.preview_sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$MAIN_SHA"
+          git fetch --no-tags origin preview
+          test "$(git rev-parse FETCH_HEAD)" = "$REVIEWED_SHA"
+          git merge --ff-only "$REVIEWED_SHA"
+          git push origin HEAD:refs/heads/main
+
+  deploy:
+    if: ${{ always() && needs.build.result == 'success' && (needs.promote.result == 'success' || needs.promote.result == 'skipped') }}
+    needs: [build, promote]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

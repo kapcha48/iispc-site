@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { navigation } from "../data";
+import { staticBase, withStaticBase } from "../lib/static-path";
 import { Logo } from "./Logo";
 
 const primaryNavigation = navigation.filter((item) => item.group === "primary");
@@ -18,7 +19,11 @@ const secondaryNavigation = [
 ];
 
 export function SiteHeader() {
-  const pathname = usePathname();
+  const currentPath = usePathname();
+  const relativePath = staticBase && currentPath.startsWith(staticBase + "/")
+    ? currentPath.slice(staticBase.length)
+    : currentPath;
+  const pathname = relativePath.replace(/\/$/, "") || "/";
   const mobileDetailsRef = useRef<HTMLDetailsElement>(null);
   const mobilePanelRef = useRef<HTMLElement>(null);
   const moreDetailsRef = useRef<HTMLDetailsElement>(null);
@@ -108,14 +113,14 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="shell header-inner">
-        <a className="brand" href="/" aria-label="IISPC — главная">
+        <a className="brand" href={withStaticBase("/")} aria-label="IISPC — главная">
           <Logo className="brand-logo" idPrefix="header-logo" showSubtitle={false} />
           <span className="brand-caption">Международный<br />институт</span>
         </a>
 
         <nav className="desktop-nav" aria-label="Основные разделы">
           {primaryNavigation.map((item) => (
-            <a key={item.href} href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+            <a key={item.href} href={withStaticBase(item.href)} aria-current={isCurrent(item.href) ? "page" : undefined}>
               {item.label}
             </a>
           ))}
@@ -123,7 +128,7 @@ export function SiteHeader() {
             <summary role="button" aria-label="Открыть дополнительные разделы">Ещё <span aria-hidden="true">⌄</span></summary>
             <div className="desktop-more-panel">
               {secondaryNavigation.map((item) => (
-                <a key={item.href} href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                <a key={item.href} href={withStaticBase(item.href)} aria-current={isCurrent(item.href) ? "page" : undefined}>
                   <strong>{item.label}</strong>
                   <small>{item.description}</small>
                 </a>
@@ -132,7 +137,7 @@ export function SiteHeader() {
           </details>
         </nav>
 
-        <a className="button button-small header-cta" href="/contacts" aria-current={isCurrent("/contacts") ? "page" : undefined}>Контакты</a>
+        <a className="button button-small header-cta" href={withStaticBase("/contacts")} aria-current={isCurrent("/contacts") ? "page" : undefined}>Контакты</a>
 
         <details className="mobile-nav" ref={mobileDetailsRef} onToggle={(event) => handleMobileToggle(event.currentTarget.open)} suppressHydrationWarning>
           <summary role="button" aria-expanded={menuOpen} aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}>
@@ -150,7 +155,7 @@ export function SiteHeader() {
               <p className="mobile-nav-group-label">Основные направления</p>
               <div className="mobile-nav-primary">
                 {primaryNavigation.map((item) => (
-                  <a key={item.href} href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                  <a key={item.href} href={withStaticBase(item.href)} aria-current={isCurrent(item.href) ? "page" : undefined}>
                     <span className="mobile-nav-index">{item.index}</span>
                     <span><strong>{item.label}</strong><small>{item.description}</small></span>
                     <span className="mobile-nav-arrow" aria-hidden="true">→</span>
@@ -161,13 +166,13 @@ export function SiteHeader() {
               <p className="mobile-nav-group-label">Информация</p>
               <div className="mobile-nav-secondary">
                 {secondaryNavigation.map((item) => (
-                  <a key={item.href} href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                  <a key={item.href} href={withStaticBase(item.href)} aria-current={isCurrent(item.href) ? "page" : undefined}>
                     <span>{item.label}</span><span aria-hidden="true">→</span>
                   </a>
                 ))}
               </div>
 
-              <a className="mobile-nav-contact" href="/contacts" aria-current={isCurrent("/contacts") ? "page" : undefined}>
+              <a className="mobile-nav-contact" href={withStaticBase("/contacts")} aria-current={isCurrent("/contacts") ? "page" : undefined}>
                 <span><strong>Связаться с институтом</strong><small>Поступление, мероприятия и сотрудничество</small></span>
                 <span aria-hidden="true">→</span>
               </a>

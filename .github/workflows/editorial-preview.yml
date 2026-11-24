@@ -1,0 +1,14 @@
+name: Сохранение правок для предпросмотра
+
+on:
+  push:
+    branches: [preview]
+
+permissions: {}
+
+jobs:
+  saved:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - run: echo 'Editorial changes saved. GitHub Pages will rebuild the preview.'
