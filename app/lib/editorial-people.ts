@@ -3,6 +3,7 @@ import { listEditorialEntries } from "./editorial-content";
 type PeopleGroup = "leadership" | "faculty" | "representatives";
 
 export type EditorialPerson = {
+  editPath: string;
   slug: string;
   name: string;
   role: string;
@@ -19,6 +20,7 @@ export function listPeople(group: PeopleGroup): EditorialPerson[] {
     .filter((entry) => (entry.group || "faculty") === group)
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.title.localeCompare(b.title, "ru"))
     .map((entry) => ({
+      editPath: entry.filepath,
       slug: entry.slug,
       name: entry.title,
       role: entry.role,

@@ -1,4 +1,5 @@
 import { sectionCopy } from "../lib/editorial-content";
+import { visualField } from "../lib/visual-fields";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { PersonBiography, PersonPortrait } from "../components/PersonCard";
 import { SectionNav } from "../components/SectionNav";
@@ -27,10 +28,10 @@ export default function InternationalPage() {
           <div className="international-masthead-grid">
             <div>
               <p className="eyebrow">Международная деятельность</p>
-              <h1>{copy.title}</h1>
+              <h1 {...visualField(copy.editPath, "title", copy.title, "Заголовок страницы")}>{copy.title}</h1>
             </div>
             <div className="international-masthead-aside">
-              <p>{copy.lead}</p>
+              <p {...visualField(copy.editPath, "excerpt", copy.lead, "Текст под заголовком")}>{copy.lead}</p>
               <dl className="international-masthead-facts" aria-label="Опубликованные сведения">
                 <div><dt>Архивные программы</dt><dd>{String(travelPrograms.length).padStart(2, "0")}</dd></div>
                 <div><dt>Региональные представители</dt><dd>{String(representatives.length).padStart(2, "0")}</dd></div>

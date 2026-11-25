@@ -1,0 +1,47 @@
+name: Импорт правок из визуального редактора
+
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: Пакет из Pages CMS
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+      - run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+      - name: Apply validated changes to preview
+        env:
+          CMS_PAYLOAD: ${{ inputs.payload }}
+        run: |
+          main_sha="$(git rev-parse HEAD)"
+          while IFS= read -r -d '' changed; do
+            case "$changed" in
+              content/*|public/archive/source/*) ;;
+              *) echo "Unexpected file in preview branch"; exit 1 ;;
+            esac
+          done < <(git diff --no-renames --name-only -z "$main_sha"...origin/preview)
+          git switch --detach origin/preview
+          git restore --source "$main_sha" --worktree -- scripts/import-visual-edits.mjs
+          node scripts/import-visual-edits.mjs
+          git add -- content/sections content/programs content/people
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name='IISPC Editor' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Apply visual editor changes'
+          git push origin HEAD:refs/heads/preview

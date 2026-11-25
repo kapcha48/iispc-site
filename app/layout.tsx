@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "./components/SiteHeader";
 import { SiteFooter } from "./components/SiteFooter";
+import { VisualEditor } from "./components/VisualEditor";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://iispc.org"),
@@ -43,6 +44,7 @@ export default function RootLayout({
           <aside className="editorial-preview-banner" aria-label="Предпросмотр сайта">
             <strong>Предпросмотр сайта</strong>
             <a href="https://app.pagescms.org/kapcha48/iispc-site/preview">Вернуться в редактор</a>
+            <VisualEditor />
           </aside>
         )}
         <SiteHeader />

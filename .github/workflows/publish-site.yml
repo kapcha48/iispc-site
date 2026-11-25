@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
   workflow_run:
-    workflows: ["Сохранение правок для предпросмотра"]
-    branches: [preview]
+    workflows: ["Сохранение правок для предпросмотра", "Импорт правок из визуального редактора"]
+    branches: [main, preview]
     types: [completed]
   workflow_dispatch:
     inputs:

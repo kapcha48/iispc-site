@@ -20,7 +20,7 @@ export default async function NewsPage() {
   const archivedItems = items.length ? [] : newsArchive.filter((item) => !managedSlugs.has(item.slug));
   return (
     <>
-      <PageHero eyebrow="Новости" title={copy.title} lead={copy.lead} action={{ href: "#news-feed", label: "Перейти к материалам" }} />
+      <PageHero eyebrow="Новости" title={copy.title} editPath={copy.editPath} lead={copy.lead} action={{ href: "#news-feed", label: "Перейти к материалам" }} />
       <nav className="content-subnav" aria-label="Материалы института"><div className="shell"><span>Материалы:</span><a aria-current="page" href="/news">Новости</a><a href="/gallery">Фотогалерея</a></div></nav>
       <section className="section news-index" id="news-feed">
         <div className="shell">

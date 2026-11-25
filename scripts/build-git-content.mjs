@@ -99,7 +99,7 @@ async function loadEditorialCollection(folder) {
     if (!title) throw new Error(filepath + ": a published entry needs a title");
     const bodyChanged = createHash("sha256").update(body.replace(/\r\n/g, "\n")).digest("hex") !== baseline[filepath];
     entries.push({
-      slug, status, title, body, bodyChanged,
+      slug, status, title, body, bodyChanged, filepath,
       excerpt: asText(data.excerpt),
       coverUrl: localAsset(data.cover),
       coverAlt: asText(data.coverAlt),

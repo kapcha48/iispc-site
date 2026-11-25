@@ -4,6 +4,7 @@ type EditorialCollection = "programs" | "pages" | "people" | "sections";
 
 export type EditorialEntry = {
   slug: string;
+  filepath: string;
   status: "published";
   title: string;
   excerpt: string;
@@ -46,8 +47,8 @@ export function listEditorialEntries(collection: EditorialCollection): Editorial
   return collections[collection].filter((entry) => entry.status === "published");
 }
 
-export function sectionCopy(slug: string): { title: string; lead: string } {
+export function sectionCopy(slug: string) {
   const entry = getEditorialEntry("sections", slug);
   if (!entry) throw new Error("Missing editorial section: " + slug);
-  return { title: entry.title, lead: entry.excerpt };
+  return { title: entry.title, lead: entry.excerpt, editPath: entry.filepath };
 }

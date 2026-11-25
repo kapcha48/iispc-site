@@ -10,6 +10,7 @@ const existingProgramSlugs = new Map([
 ]);
 
 export type EditorialProgram = Program & {
+  editPath: string;
   body: string;
   admission: string;
   coverUrl: string | null;
@@ -21,6 +22,7 @@ export type EditorialProgram = Program & {
 
 function toProgram(entry: EditorialEntry): EditorialProgram {
   return {
+    editPath: entry.filepath,
     slug: existingProgramSlugs.get(entry.slug) ?? entry.slug,
     title: entry.title,
     type: entry.programType || "Образовательная программа",

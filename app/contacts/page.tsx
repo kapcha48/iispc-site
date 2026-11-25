@@ -18,7 +18,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Pro
   const initialMessage = program ? `Меня интересует программа «${program.slice(0, 180)}». Хотелось бы уточнить условия и ближайшие даты.` : "";
   return (
     <>
-      <PageHero eyebrow="Контакты" title={copy.title} lead={copy.lead} />
+      <PageHero eyebrow="Контакты" title={copy.title} editPath={copy.editPath} lead={copy.lead} />
       <SectionNav items={[{ href: "#contact-form", label: "Отправить обращение" }, { href: "#contact-options", label: "Другие способы связи" }]} />
       <section className="section contact-form-section" id="contact-form">
         <div className="shell contact-form-layout">

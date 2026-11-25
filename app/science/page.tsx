@@ -21,7 +21,7 @@ export default async function SciencePage() {
   const archivedPublications = managedPublications.length ? [] : publicationArchive.filter((item) => !managedSlugs.has(item.slug));
   return (
     <>
-      <PageHero eyebrow="Наука" title={copy.title} lead={copy.lead} action={{ href: "#science-work", label: "Смотреть разделы" }} />
+      <PageHero eyebrow="Наука" title={copy.title} editPath={copy.editPath} lead={copy.lead} action={{ href: "#science-work", label: "Смотреть разделы" }} />
       <SectionNav items={[{ href: "#science-work", label: "Разделы науки" }, { href: "#science-publications", label: "Публикации" }]} />
       <section className="section science-pillars" id="science-work">
         <div className="shell">

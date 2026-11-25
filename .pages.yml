@@ -9,6 +9,16 @@ settings:
     merge: true
 
 actions:
+  - name: import-visual-edits
+    label: Принять правки со страницы
+    ref: main
+    workflow: import-visual-edits.yml
+    confirm: false
+    fields:
+      - name: changes
+        label: Вставьте пакет, скопированный в предпросмотре
+        type: textarea
+        required: true
   - name: publish-preview
     label: Опубликовать проверенные правки
     ref: main

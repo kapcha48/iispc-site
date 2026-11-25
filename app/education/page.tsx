@@ -18,7 +18,7 @@ export default function EducationPage() {
   const tools = getEditorialLegacyPage("education", "tools");
   return (
     <>
-      <PageHero eyebrow="Обучение" title={copy.title} lead={copy.lead} action={{ href: "#programs", label: "Перейти к программам" }} />
+      <PageHero eyebrow="Обучение" title={copy.title} editPath={copy.editPath} lead={copy.lead} action={{ href: "#programs", label: "Перейти к программам" }} />
       <SectionNav items={[{ href: "#programs", label: "Программы" }, { href: "#education-types", label: "Виды образования" }, { href: "#education-consultation", label: "Консультация" }]} />
       <section className="section education-catalog" id="programs">
         <div className="shell">

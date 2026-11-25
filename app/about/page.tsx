@@ -20,7 +20,7 @@ export default function AboutPage() {
     <>
       <PageHero
         eyebrow="О нас"
-        title={copy.title}
+        title={copy.title} editPath={copy.editPath}
         lead={copy.lead}
         action={{ href: "#about-institute", label: "Об институте" }}
       />

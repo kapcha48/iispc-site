@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { EditorialPerson } from "../lib/editorial-people";
 import EditorialMarkdown from "./EditorialMarkdown";
+import { visualField } from "../lib/visual-fields";
 
 export function PersonPortrait({ person, compact = false }: { person: EditorialPerson; compact?: boolean }) {
   if (!person.coverUrl) {
@@ -17,6 +18,7 @@ export function PersonPortrait({ person, compact = false }: { person: EditorialP
       height={compact ? 56 : 86}
       style={compact ? { objectFit: "cover", width: 56, height: 56, margin: 0 } : { objectFit: "cover" }}
       unoptimized
+      {...visualField(person.editPath, "cover", person.coverUrl, "Фотография сотрудника")}
     />
   );
 }
@@ -36,10 +38,10 @@ export function PersonCard({ person, index }: { person: EditorialPerson; index: 
     <article>
       <PersonPortrait person={person} />
       <span>{String(index + 1).padStart(2, "0")}</span>
-      <h3>{person.name}</h3>
-      {person.degree ? <p>{person.degree}</p> : null}
-      {person.excerpt ? <p>{person.excerpt}</p> : null}
-      {person.role ? <small>{person.role}</small> : null}
+      <h3 {...visualField(person.editPath, "title", person.name, "Имя сотрудника")}>{person.name}</h3>
+      {person.degree ? <p {...visualField(person.editPath, "degree", person.degree, "Квалификация")}>{person.degree}</p> : null}
+      {person.excerpt ? <p {...visualField(person.editPath, "excerpt", person.excerpt, "Краткое описание")}>{person.excerpt}</p> : null}
+      {person.role ? <small {...visualField(person.editPath, "role", person.role, "Должность")}>{person.role}</small> : null}
       <PersonBiography person={person} />
     </article>
   );

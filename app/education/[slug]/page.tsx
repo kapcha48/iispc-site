@@ -5,6 +5,7 @@ import { Breadcrumbs } from "../../components/Breadcrumbs";
 import EditorialMarkdown from "../../components/EditorialMarkdown";
 import { getProgram, listPrograms } from "../../lib/editorial-programs";
 import { missingPageMetadata, pageMetadata } from "../../lib/page-metadata";
+import { visualField } from "../../lib/visual-fields";
 
 export function generateStaticParams() {
   return listPrograms().map((program) => ({ slug: program.slug }));
@@ -35,8 +36,8 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
         <div className="shell">
           <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Обучение", href: "/education" }, { label: program.title }]} />
           <p className="eyebrow">{program.type}</p>
-          <h1>{program.title}</h1>
-          {program.summary ? <p className="program-hero-lead">{program.summary}</p> : null}
+          <h1 {...visualField(program.editPath, "title", program.title, "Название программы")}>{program.title}</h1>
+          {program.summary ? <p className="program-hero-lead" {...visualField(program.editPath, "excerpt", program.summary, "Краткое описание")}>{program.summary}</p> : null}
           <div className="program-hero-actions">
             <a className="button" href={program.registrationUrl || contactHref}>{program.registrationUrl ? "Записаться на программу" : "Узнать о программе"}</a>
             {program.status ? <span className="status-dot">{program.status}</span> : null}
@@ -44,7 +45,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
       {program.coverUrl ? <div className="shell article-cover">
-        <Image src={program.coverUrl} alt={program.coverAlt || program.title} width={1600} height={900} sizes="(max-width: 1080px) 100vw, 1080px" unoptimized />
+        <Image src={program.coverUrl} alt={program.coverAlt || program.title} width={1600} height={900} sizes="(max-width: 1080px) 100vw, 1080px" unoptimized {...visualField(program.editPath, "cover", program.coverUrl, "Обложка программы")} />
       </div> : null}
       {facts.length || program.attachmentUrl || program.outcomes.length ? <section className="section">
         <div className="shell program-details-grid">

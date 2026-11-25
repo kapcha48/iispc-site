@@ -1,4 +1,5 @@
 import { Breadcrumbs } from "./Breadcrumbs";
+import { visualField } from "../lib/visual-fields";
 
 const sectionNumbers: Record<string, string> = {
   "Обучение": "01",
@@ -17,12 +18,14 @@ export function PageHero({
   lead,
   backLabel,
   action,
+  editPath,
 }: {
   eyebrow: string;
   title: string;
   lead: string;
   backLabel?: string;
   action?: { href: string; label: string };
+  editPath?: string;
 }) {
   const sectionNumber = sectionNumbers[eyebrow] ?? "IISPC";
 
@@ -36,11 +39,11 @@ export function PageHero({
         <div className="page-hero-grid">
           <div className="page-hero-title">
           <p className="eyebrow">{eyebrow}</p>
-          <h1>{title}</h1>
+          <h1 {...visualField(editPath, "title", title, "Заголовок страницы")}>{title}</h1>
           </div>
           <div className="page-hero-aside">
             <span className="page-hero-rule" aria-hidden="true" />
-            <p className="page-lead">{lead}</p>
+            <p className="page-lead" {...visualField(editPath, "excerpt", lead, "Текст под заголовком")}>{lead}</p>
             {action ? <a className="page-hero-action" href={action.href}>{action.label} <span aria-hidden="true">↓</span></a> : null}
             <small>Международный институт социальной психотерапии и консультирования</small>
           </div>
