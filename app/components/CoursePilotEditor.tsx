@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { createContext, useContext, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { staticBase } from "../lib/static-path";
-import "./course-pilot-editor.css";
 
 type Course = { title: string; excerpt: string; cover: string; coverAlt: string };
 type Version = Course & { revision: string };
