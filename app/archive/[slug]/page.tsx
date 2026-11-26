@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
+import { CoursePilotCover, CoursePilotEditor, CoursePilotHeader } from "../../components/CoursePilotEditor";
 import EditorialMarkdown from "../../components/EditorialMarkdown";
+import pilotPhotos from "../../content/course-pilot-photos.json";
 import { getEditorialArchiveItem, listEditorialArchiveItems } from "../../lib/editorial-pages";
 import { missingPageMetadata, pageMetadata } from "../../lib/page-metadata";
 
@@ -26,15 +28,20 @@ export default async function SourceArchiveDetailPage({ params }: { params: Prom
   const editorUrl = process.env.IISPC_PREVIEW === "1" && item.kind === "course" && item.editorialPath
     ? `https://app.pagescms.org/kapcha48/iispc-site/preview/collection/programs/edit/${encodeURIComponent(item.editorialPath)}`
     : null;
+  const pilot = Boolean(editorUrl && item.slug === "course-14937");
+  const configuredEndpoint = process.env.IISPC_COURSE_EDITOR_URL ?? "";
+  const endpoint = /^https:\/\/iispc-course-editor\.[a-z0-9-]+\.workers\.dev$/.test(configuredEndpoint) ? configuredEndpoint : undefined;
 
-  return (
+  const article = (
     <article className="article-page source-archive-detail">
       <header className="article-header">
         <div className="shell article-header-inner">
           <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Архив", href: "/archive" }, { label: item.title }]} />
           <p className="eyebrow">{item.kindLabel} · архив IISPC</p>
-          <h1>{item.title}</h1>
-          <p className="article-intro">{item.excerpt}</p>
+          {pilot ? <CoursePilotHeader /> : <>
+            <h1>{item.title}</h1>
+            <p className="article-intro">{item.excerpt}</p>
+          </>}
           {editorUrl && (
             <div className="archive-course-editor">
               <a className="button button-small" href={editorUrl} target="_blank" rel="noopener noreferrer" aria-describedby="course-editor-hint">
@@ -45,11 +52,12 @@ export default async function SourceArchiveDetailPage({ params }: { params: Prom
           )}
         </div>
       </header>
-      {item.coverUrl ? <div className="shell article-cover"><Image src={item.coverUrl} alt={item.coverAlt} width={1600} height={900} sizes="(max-width: 1080px) 100vw, 1080px" unoptimized /></div> : null}
+      {pilot ? <CoursePilotCover /> : item.coverUrl ? <div className="shell article-cover"><Image src={item.coverUrl} alt={item.coverAlt} width={1600} height={900} sizes="(max-width: 1080px) 100vw, 1080px" unoptimized /></div> : null}
       {item.editorialBody === undefined
         ? <div className="shell article-body archive-publication-body" dangerouslySetInnerHTML={{ __html: html }} />
         : <div className="shell article-body archive-publication-body"><EditorialMarkdown source={item.editorialBody} /></div>}
       <div className="shell article-source"><a className="text-link" href="/archive">Вернуться ко всему архиву <span aria-hidden="true">→</span></a></div>
     </article>
   );
+  return pilot ? <CoursePilotEditor endpoint={endpoint} photos={pilotPhotos} initial={{ title: item.title, excerpt: item.excerpt, cover: item.coverUrl ?? "", coverAlt: item.coverAlt }}>{article}</CoursePilotEditor> : article;
 }

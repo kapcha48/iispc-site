@@ -65,6 +65,7 @@ jobs:
         env:
           IISPC_STATIC_HOST: "1"
           IISPC_PREVIEW: "1"
+          IISPC_COURSE_EDITOR_URL: ${{ vars.IISPC_COURSE_EDITOR_URL }}
           NEXT_PUBLIC_IISPC_STATIC_BASE: /iispc-site/preview
           REVIEWED_SHA: ${{ steps.select.outputs.preview_sha }}
         run: |

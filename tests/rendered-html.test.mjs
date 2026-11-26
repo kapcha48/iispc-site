@@ -128,6 +128,7 @@ test("archived courses use their program record and link to that record only in 
       if (!program.bodyChanged && item.html) assert.ok(html.includes(item.html), `${item.slug}: original article body`);
     }
     assert.equal(html.includes("Редактировать этот курс"), isPreview && program?.status === "published", item.slug);
+    assert.equal(html.includes('aria-label="Визуальный редактор курса"'), isPreview && program?.status === "published" && item.slug === "course-14937", item.slug);
   }
 
   const nonCourse = sourceArchive.items.find((item) => item.kind === "post");
