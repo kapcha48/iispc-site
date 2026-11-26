@@ -601,6 +601,8 @@ html.menu-is-open { overflow: hidden; }
 .article-header-inner { max-width: 1020px; }
 .article-header h1 { max-width: 1000px; margin-bottom: 24px; font-size: clamp(46px, 5.2vw, 74px); line-height: 1.08; }
 .article-intro { max-width: 760px; color: var(--muted); font-size: 20px; }
+.archive-course-editor { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 1.5rem; }
+.archive-course-editor p { flex: 1 1 22rem; min-width: 0; max-width: 36rem; color: var(--muted); font-size: .875rem; }
 .article-author { color: var(--wine); font-weight: 700; }
 .article-meta { margin-top: 32px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
 .article-cover { max-width: 1080px; margin-top: 56px; }

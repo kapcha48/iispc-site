@@ -23,6 +23,9 @@ export default async function SourceArchiveDetailPage({ params }: { params: Prom
   const item = getEditorialArchiveItem(slug);
   if (!item) notFound();
   const html = item.html || '<p class="archive-empty-note">В прежней версии сайта эта страница была опубликована без основного текста.</p>';
+  const editorUrl = process.env.IISPC_PREVIEW === "1" && item.kind === "course" && item.editorialPath
+    ? `https://app.pagescms.org/kapcha48/iispc-site/preview/collection/programs/edit/${encodeURIComponent(item.editorialPath)}`
+    : null;
 
   return (
     <article className="article-page source-archive-detail">
@@ -32,6 +35,14 @@ export default async function SourceArchiveDetailPage({ params }: { params: Prom
           <p className="eyebrow">{item.kindLabel} · архив IISPC</p>
           <h1>{item.title}</h1>
           <p className="article-intro">{item.excerpt}</p>
+          {editorUrl && (
+            <div className="archive-course-editor">
+              <a className="button button-small" href={editorUrl} target="_blank" rel="noopener noreferrer" aria-describedby="course-editor-hint">
+                Редактировать этот курс
+              </a>
+              <p id="course-editor-hint">Админка откроется в новой вкладке. После сохранения дождитесь сборки и обновите эту страницу. Публикация на сайте — отдельно.</p>
+            </div>
+          )}
         </div>
       </header>
       {item.coverUrl ? <div className="shell article-cover"><Image src={item.coverUrl} alt={item.coverAlt} width={1600} height={900} sizes="(max-width: 1080px) 100vw, 1080px" unoptimized /></div> : null}

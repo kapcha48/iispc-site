@@ -13,13 +13,14 @@ type PageSource = {
 export type EditorialPage<T extends PageSource> = T & {
   coverAlt: string;
   originalCoverUrl: string | null;
+  editorialPath?: string;
   editorialBody?: string;
 };
 
-function applyEditorialPage<T extends PageSource>(page: T): EditorialPage<T> | null {
-  const entry = getEditorialEntry("pages", page.slug);
+function applyEditorialPage<T extends PageSource>(page: T, collection: "pages" | "programs" = "pages"): EditorialPage<T> | null {
+  const entry = getEditorialEntry(collection, page.slug);
   if (!entry) {
-    return getEditorialRecord("pages", page.slug)
+    return getEditorialRecord(collection, page.slug)
       ? null
       : { ...page, coverAlt: "", originalCoverUrl: page.coverUrl };
   }
@@ -31,6 +32,7 @@ function applyEditorialPage<T extends PageSource>(page: T): EditorialPage<T> | n
     coverUrl: entry.coverUrl,
     coverAlt: entry.coverAlt,
     originalCoverUrl: page.coverUrl,
+    editorialPath: entry.filepath,
     // The original HTML contains media and documents missing from the first
     // import. Keep it until an editor changes the main text.
     editorialBody: entry.bodyChanged ? entry.body : undefined,
@@ -57,12 +59,12 @@ export function listEditorialTravelPrograms() {
   return travelArchive.map((program) => applyEditorialPage(program)).filter((program) => program !== null);
 }
 
-export function getEditorialArchiveItem(slug: string) {
+export function getEditorialArchiveItem(slug: string): EditorialPage<(typeof sourceArchiveItems)[number]> | null {
   const item = getSourceArchiveItem(slug);
   if (!item) return null;
-  return item.kind === "page"
-    ? applyEditorialPage(item)
-    : { ...item, coverAlt: "", originalCoverUrl: item.coverUrl, editorialBody: undefined };
+  if (item.kind === "page") return applyEditorialPage(item);
+  if (item.kind === "course") return applyEditorialPage(item, "programs");
+  return { ...item, coverAlt: "", originalCoverUrl: item.coverUrl };
 }
 
 export function listEditorialArchiveItems() {

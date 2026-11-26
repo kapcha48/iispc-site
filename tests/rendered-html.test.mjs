@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 
 const staticBase = process.env.NEXT_PUBLIC_IISPC_STATIC_BASE ?? "";
 const editorial = JSON.parse(readFileSync(new URL("../app/content/editorial-content.json", import.meta.url)));
+const sourceArchive = JSON.parse(readFileSync(new URL("../app/content/source-archive.json", import.meta.url)));
 const integrativeProgram = editorial.programs.find((entry) => entry.slug === "course-12775");
 
 async function render(pathname = "/") {
@@ -109,3 +110,30 @@ test("renders page-level navigation and complete breadcrumbs", async () => {
   assert.match(programHtml, /aria-label="Путь по сайту"/);
   assert.match(programHtml, /aria-current="page"/);
 });
+
+test("archived courses use their program record and link to that record only in preview", async () => {
+  const isPreview = process.env.IISPC_PREVIEW === "1";
+  for (const item of sourceArchive.items.filter((item) => item.kind === "course")) {
+    const program = editorial.programs.find((entry) => entry.slug === item.slug);
+    const response = await render(`/archive/${item.slug}`);
+    assert.equal(response.status, program && program.status !== "published" ? 404 : 200, item.slug);
+    if (response.status !== 200) continue;
+    const html = await response.text();
+    if (program?.status === "published") {
+      const courseLink = `https://app.pagescms.org/kapcha48/iispc-site/preview/collection/programs/edit/${encodeURIComponent(program.filepath)}`;
+      assert.equal(html.includes(`href="${courseLink}"`), isPreview, item.slug);
+      assert.ok(html.includes(`>${escapeHtml(program.title)}</h1>`), item.slug);
+      assert.ok(html.includes(`>${escapeHtml(program.excerpt)}</p>`), item.slug);
+      if (program.coverUrl) assert.ok(html.includes(escapeHtml(encodeURI(program.coverUrl))) || html.includes(escapeHtml(program.coverUrl)), item.slug);
+      if (!program.bodyChanged && item.html) assert.ok(html.includes(item.html), `${item.slug}: original article body`);
+    }
+    assert.equal(html.includes("Редактировать этот курс"), isPreview && program?.status === "published", item.slug);
+  }
+
+  const nonCourse = sourceArchive.items.find((item) => item.kind === "post");
+  assert.doesNotMatch(await (await render(`/archive/${nonCourse.slug}`)).text(), /Редактировать этот курс/);
+});
+
+function escapeHtml(text) {
+  return text.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#x27;" })[character]);
+}
